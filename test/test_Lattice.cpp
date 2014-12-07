@@ -9,6 +9,10 @@
 # include "Lattice.h"
 # include <math.h>
 
+TEST(testtest, first) {
+	Lattice* lat = new Lattice(10,2);
+}
+
 TEST(InitTest, CanInitialize) {
     Lattice* lat = new Lattice(10,2);
 }
@@ -105,4 +109,29 @@ TEST(ClusterMethods, TestLabelCluster) {
 	EXPECT_EQ(lat->getCluster(0,0,1),lat->getCluster(0,1,1));
 	EXPECT_EQ(lat->getCluster(0,0,1),lat->getCluster(1,1,0));
 
+}
+
+TEST(ClusterMethods, TestUpdateProper) {
+	Lattice* lat = new Lattice(2,2);
+	int myproper[] = {0,1,2,2,4,3,4,4,2};
+	lat->proper = new vector<int> ();
+	for (int i=0; i<9; i++) {
+		lat->proper->push_back(myproper[i]);
+	}
+	lat->updateProper(4,2);
+	int newProper[] = {0,1,2,2,2,3,2,2,2};
+	for (int i=0; i<9; i++) {
+		EXPECT_EQ(newProper[i],(*lat->proper)[i]);
+	}
+}
+
+TEST(ClusterMethods, TestRestructureProper) {
+	Lattice* lat = new Lattice(10,2);
+	lat->updateBonds();
+	lat->labelCluster();
+	int max = 0;
+	for (int i=0; i<lat->getV(); i++) {
+		if (lat->cluster[i]>max) max = lat->cluster[i];
+	}
+	EXPECT_EQ(lat->numLabels, max +1 );
 }

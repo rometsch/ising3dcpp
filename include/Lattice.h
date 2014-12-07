@@ -13,6 +13,7 @@
 #include <math.h>
 #include <iostream>
 #include <set>
+#include <boost/random.hpp>
 
 using namespace std;
 
@@ -26,14 +27,15 @@ public:
 	int A;
 	int V;
 	double beta;
-	vector<int>* label;
 	vector<int>* proper;
-
+	boost::mt19937* rng;
 
 
 
 	Lattice(int L,double T);
 	virtual ~Lattice();
+
+	void iterate();
 
 //	Cluster methods
 	void updateBonds();
@@ -46,12 +48,14 @@ public:
 
 //	Tools
 
-
+	int getLastSpin(int i, int dim);
 	int getLastSpin(int i,int j, int k, int dim);
 	int getLastCluster(int i, int dim);
 	int getLastCluster(int i,int j, int k, int dim);
 
+	int getSpin(int i);
 	int getSpin(int i,int j, int k);
+	void setSpin(int i, int s);
 	void setSpin(int i,int j, int k, int s);
 
 	int getCluster(int i,int j, int k);
@@ -70,10 +74,11 @@ public:
 	int getV() { return this->V; }
 	void setL(int L) { this->L = L; this->A = L*L; this->V = L*L*L; }
 
-	int getProper(int i) { return (*this->proper)[i]; }
+	int getProper(int i);
 	void setProper(int i, int c) { (*this->proper)[i] = c; }
 
-	double myrand() { return ((double) rand() / (RAND_MAX)); }
+	void initRng(int seed);
+	double myrand();
 
 };
 
